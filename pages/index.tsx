@@ -1,19 +1,25 @@
-import { useCallback, useMemo } from 'react'
-
+import { useCallback, useMemo, useState } from 'react'
 import type { NextPage } from 'next'
 import { Inter } from '@next/font/google'
 import Head from 'next/head'
-
 import { useDropzone } from 'react-dropzone'
 import clsx from 'clsx'
-
 import { acceptStyle, rejectStyle } from '../styles/utils'
 
+// App font
 const inter = Inter({ subsets: ['latin'] })
 
 const Home: NextPage = () => {
+  const [files, setFiles] = useState<HTMLImageElement | null>(null)
   const onDrop = useCallback((acceptedFiles: any) => {
-    console.log(acceptedFiles)
+    let img = new Image()
+    img.src = window.URL.createObjectURL(acceptedFiles[0])
+    img.onload = () => {
+      console.log(img.width + ' ' + img.height)
+      console.log('Aspect ratio', img.height / img.width)
+    }
+
+    setFiles(img)
   }, [])
 
   const {
@@ -46,35 +52,39 @@ const Home: NextPage = () => {
           'flex w-full flex-1 flex-col items-center justify-center px-8 text-center',
         )}
       >
-        <div
-          className="relative w-full md:w-[654px] h-[400px] md:h-[520px] bg-[#FDFDFD] border-4 border-dashed border-[rgba(0,0,0,0.1)] rounded-[28px] flex flex-col items-center justify-center"
-          {...getRootProps({ style: dropzoneStyle })}
-        >
-          <input {...getInputProps()} />
-          {!isDragActive && (
-            <>
-              <h4 className="text-xl font-semibold max-w-[214px]">
-                Upload a screenshot of your product
-              </h4>
-              <button className="flex gap-2 items-center bg-black py-2 px-[10px] text-white text-sm font-semibold rounded-md mt-4 hover:bg-gradient-to-r from-indigo-700 via-purple-600 to-pink-500 transition-all duration-300 ease-out bg-size-300 bg-pos-0 hover:bg-pos-100 ">
-                Upload Screenshot
-              </button>
-              <span className="text-[#959595] text-xs font-normal mt-4">
-                Or drag it into this canvas
+        {!files ? (
+          <div
+            className="relative w-full md:w-[654px] h-[400px] md:h-[520px] bg-[#FDFDFD] border-4 border-dashed border-[rgba(0,0,0,0.1)] rounded-[28px] flex flex-col items-center justify-center"
+            {...getRootProps({ style: dropzoneStyle })}
+          >
+            <input {...getInputProps()} />
+            {!isDragActive && (
+              <>
+                <h4 className="text-xl font-semibold max-w-[214px]">
+                  Upload a screenshot of your product
+                </h4>
+                <button className="flex gap-2 items-center bg-black py-2 px-[10px] text-white text-sm font-semibold rounded-md mt-4 hover:bg-gradient-to-r from-indigo-700 via-purple-600 to-pink-500 transition-all ease-out bg-size-300 bg-pos-0 hover:bg-pos-100 hover:shadow-lg">
+                  Upload Screenshot
+                </button>
+                <span className="text-[#959595] text-xs font-normal mt-4">
+                  Or drag it into this canvas
+                </span>
+              </>
+            )}
+            {isDragReject && (
+              <span className="text-black text-md font-semibold mt-4">
+                🫠 Bummer! This file is not accepted
               </span>
-            </>
-          )}
-          {isDragReject && (
-            <span className="text-black text-xs font-semibold mt-4">
-              🫠 Bummer! This file is not accepted
-            </span>
-          )}
-          {isDragAccept && (
-            <span className="text-black text-xs font-semibold mt-4">
-              ⚡ Almost there! Drop this file to upload
-            </span>
-          )}
-        </div>
+            )}
+            {isDragAccept && (
+              <span className="text-black text-md font-semibold mt-4">
+                ⚡ Almost there! Drop this file to upload
+              </span>
+            )}
+          </div>
+        ) : (
+          <div className="relative w-full md:w-[654px] h-[400px] md:h-[520px] bg-[#f7f7f7] rounded-[28px] flex flex-col items-center justify-center"></div>
+        )}
       </main>
     </div>
   )

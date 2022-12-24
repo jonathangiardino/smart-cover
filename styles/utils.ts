@@ -1,6 +1,6 @@
 // Dropzone state styles
 export const acceptStyle = {
-  borderColor: "#78D273",
+  borderColor: "#000",
   borderOpacity: 0.25,
 };
 
