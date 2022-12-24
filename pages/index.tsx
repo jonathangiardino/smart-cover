@@ -12,6 +12,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 const Home: NextPage = () => {
   const [screenshot, setScreenshot] = useState<HTMLImageElement | null>(null)
+  const [displayToolbar, setDisplayToolbar] = useState<boolean>(true)
   const onDrop = useCallback((acceptedFiles: any) => {
     let img = new Image()
     img.src = window.URL.createObjectURL(acceptedFiles[0])
@@ -51,7 +52,7 @@ const Home: NextPage = () => {
       <main
         className={clsx(
           inter.className,
-          'flex w-full flex-1 flex-col items-center justify-center px-8 text-center',
+          'relative flex w-full flex-1 flex-col items-center justify-center px-8 text-center',
         )}
       >
         {!screenshot ? (
@@ -85,7 +86,7 @@ const Home: NextPage = () => {
             )}
           </div>
         ) : (
-          <div className="relative w-full md:w-[654px] h-[400px] md:h-[520px] bg-[#f7f7f7] rounded-[28px] flex flex-col items-center justify-center">
+          <div className="relative w-full md:w-[654px] h-[400px] md:h-[520px] bg-[#f7f7f7] rounded-[28px] flex flex-col items-center justify-center border-[1px] border-[rgba(0,0,0,0.06)]">
             <NextImage
               className="object-contain object-center w-full h-full p-8"
               src={screenshot.src}
@@ -95,6 +96,12 @@ const Home: NextPage = () => {
             />
           </div>
         )}
+        <div
+          className={clsx(
+            'h-[50px] w-full md:w-[416px] m-2 border-[1px] border-[rgba(0,0,0,0.06)] rounded-lg shadow-lg transition-opacity',
+            screenshot && displayToolbar ? 'opacity-100' : 'opacity-0',
+          )}
+        ></div>
       </main>
     </div>
   )
