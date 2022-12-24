@@ -1,84 +1,81 @@
+import { useCallback, useMemo } from 'react'
+
 import type { NextPage } from 'next'
+import { Inter } from '@next/font/google'
 import Head from 'next/head'
-import Image from 'next/image'
+
+import { useDropzone } from 'react-dropzone'
+import clsx from 'clsx'
+
+import { acceptStyle, rejectStyle } from '../styles/utils'
+
+const inter = Inter({ subsets: ['latin'] })
 
 const Home: NextPage = () => {
+  const onDrop = useCallback((acceptedFiles: any) => {
+    console.log(acceptedFiles)
+  }, [])
+
+  const {
+    getRootProps,
+    getInputProps,
+    isFocused,
+    isDragActive,
+    isDragAccept,
+    isDragReject,
+  } = useDropzone({ onDrop, accept: { 'image/*': [] } })
+
+  const dropzoneStyle = useMemo(
+    () => ({
+      ...(isDragAccept ? acceptStyle : {}),
+      ...(isDragReject ? rejectStyle : {}),
+    }),
+    [isFocused, isDragAccept, isDragReject],
+  )
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
       <Head>
-        <title>Create Next App</title>
+        <title>Smart Cover</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
-
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="rounded-md bg-gray-100 p-3 font-mono text-lg">
-            pages/index.tsx
-          </code>
-        </p>
-
-        <div className="mt-6 flex max-w-4xl flex-wrap items-center justify-around sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and its API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+      <main
+        className={clsx(
+          inter.className,
+          'flex w-full flex-1 flex-col items-center justify-center px-8 text-center',
+        )}
+      >
+        <div
+          className="relative w-full md:w-[654px] h-[400px] md:h-[520px] bg-[#FDFDFD] border-4 border-dashed border-[rgba(0,0,0,0.1)] rounded-[28px] flex flex-col items-center justify-center"
+          {...getRootProps({ style: dropzoneStyle })}
+        >
+          <input {...getInputProps()} />
+          {!isDragActive && (
+            <>
+              <h4 className="text-xl font-semibold max-w-[214px]">
+                Upload a screenshot of your product
+              </h4>
+              <button className="flex gap-2 items-center bg-black py-2 px-[10px] text-white text-sm font-semibold rounded-md mt-4 hover:bg-gradient-to-r from-indigo-700 via-purple-600 to-pink-500 transition-all duration-300 ease-out bg-size-300 bg-pos-0 hover:bg-pos-100 ">
+                Upload Screenshot
+              </button>
+              <span className="text-[#959595] text-xs font-normal mt-4">
+                Or drag it into this canvas
+              </span>
+            </>
+          )}
+          {isDragReject && (
+            <span className="text-black text-xs font-semibold mt-4">
+              🫠 Bummer! This file is not accepted
+            </span>
+          )}
+          {isDragAccept && (
+            <span className="text-black text-xs font-semibold mt-4">
+              ⚡ Almost there! Drop this file to upload
+            </span>
+          )}
         </div>
       </main>
-
-      <footer className="flex h-24 w-full items-center justify-center border-t">
-        <a
-          className="flex items-center justify-center gap-2"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-        </a>
-      </footer>
     </div>
   )
 }
