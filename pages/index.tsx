@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import type { NextPage } from 'next'
 import { Inter } from '@next/font/google'
+import NextImage from 'next/image'
 import Head from 'next/head'
 import { useDropzone } from 'react-dropzone'
 import clsx from 'clsx'
@@ -10,16 +11,17 @@ import { acceptStyle, rejectStyle } from '../styles/utils'
 const inter = Inter({ subsets: ['latin'] })
 
 const Home: NextPage = () => {
-  const [files, setFiles] = useState<HTMLImageElement | null>(null)
+  const [screenshot, setScreenshot] = useState<HTMLImageElement | null>(null)
   const onDrop = useCallback((acceptedFiles: any) => {
     let img = new Image()
     img.src = window.URL.createObjectURL(acceptedFiles[0])
     img.onload = () => {
+      console.log('Image name', img.title)
       console.log(img.width + ' ' + img.height)
       console.log('Aspect ratio', img.height / img.width)
     }
 
-    setFiles(img)
+    setScreenshot(img)
   }, [])
 
   const {
@@ -52,7 +54,7 @@ const Home: NextPage = () => {
           'flex w-full flex-1 flex-col items-center justify-center px-8 text-center',
         )}
       >
-        {!files ? (
+        {!screenshot ? (
           <div
             className="relative w-full md:w-[654px] h-[400px] md:h-[520px] bg-[#FDFDFD] border-4 border-dashed border-[rgba(0,0,0,0.1)] rounded-[28px] flex flex-col items-center justify-center"
             {...getRootProps({ style: dropzoneStyle })}
@@ -83,7 +85,15 @@ const Home: NextPage = () => {
             )}
           </div>
         ) : (
-          <div className="relative w-full md:w-[654px] h-[400px] md:h-[520px] bg-[#f7f7f7] rounded-[28px] flex flex-col items-center justify-center"></div>
+          <div className="relative w-full md:w-[654px] h-[400px] md:h-[520px] bg-[#f7f7f7] rounded-[28px] flex flex-col items-center justify-center">
+            <NextImage
+              className="object-contain object-center w-full h-full p-8"
+              src={screenshot.src}
+              alt={screenshot.title}
+              width={screenshot.width}
+              height={screenshot.height}
+            />
+          </div>
         )}
       </main>
     </div>

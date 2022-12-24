@@ -11,3 +11,4 @@
 
 - [ ] Add gradient background
 - [ ] Add iPhone frame color option
+- [ ] Add Rounded corners option
