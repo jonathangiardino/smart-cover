@@ -9,6 +9,7 @@ import clsx from 'clsx'
 import * as Tooltip from '@radix-ui/react-tooltip'
 import * as Popover from '@radix-ui/react-popover'
 import { HexColorPicker, HexColorInput } from 'react-colorful'
+import { useIdleTimer } from 'react-idle-timer'
 import { acceptStyle, rejectStyle } from '../styles/utils'
 import { Icon } from '../components/shared/icon'
 
@@ -205,7 +206,7 @@ const ToolbarColorOption: FC<ToolbarColorOptionProps> = ({
 
 const Home: NextPage = () => {
   const [screenshot, setScreenshot] = useState<HTMLImageElement | null>(null)
-  const [displayToolbar, setDisplayToolbar] = useState<boolean>(true)
+  const [displayToolbar, setDisplayToolbar] = useState<boolean>(false)
   const [backgroundColor, setBackgroundColor] = useState<string>('#F7F7F7')
   const [customColorActive, setCustomColorActive] = useState<boolean>(false)
   const [bgValue] = useDebounce(backgroundColor, 150)
@@ -239,6 +240,12 @@ const Home: NextPage = () => {
     }),
     [isFocused, isDragAccept, isDragReject],
   )
+
+  const onIdle = () => {
+    setDisplayToolbar(false)
+  }
+
+  useIdleTimer({ onIdle, timeout: 3000 })
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
@@ -289,6 +296,7 @@ const Home: NextPage = () => {
             className={clsx(
               'relative w-full md:w-[654px] h-[400px] md:h-[520px] rounded-[28px] flex flex-col items-center justify-center border-[1px] border-[rgba(0,0,0,0.06)] transition-colors duration-500 ease-out',
             )}
+            onMouseOver={() => setDisplayToolbar(true)}
           >
             <NextImage
               className="object-contain object-center w-full h-full p-8"
@@ -301,10 +309,8 @@ const Home: NextPage = () => {
         )}
         <div
           className={clsx(
-            'h-[50px] w-full md:w-[416px] m-2 p-2 border-[1px] border-[rgba(0,0,0,0.06)] rounded-lg shadow-lg transition-opacity',
-            screenshot && displayToolbar
-              ? 'flex justify-start items-start opacity-100'
-              : 'hidden opacity-0',
+            'h-[50px] w-full md:w-[416px] m-2 p-2 border-[1px] border-[rgba(0,0,0,0.06)] rounded-lg shadow-lg transition-opacity duration-500 ease-in-out',
+            screenshot && displayToolbar ? 'opacity-100' : 'opacity-0',
           )}
         >
           <div className="flex justify-center items-center gap-3">
