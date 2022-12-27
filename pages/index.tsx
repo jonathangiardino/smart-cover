@@ -183,10 +183,10 @@ const ToolbarColorOption: FC<ToolbarColorOptionProps> = ({
               onClick={onClick}
             >
               <span
+                style={{ backgroundColor: bg }}
                 className={clsx(
                   'h-5 w-5 rounded-full',
-                  backgroundValue,
-                  backgroundValue === 'bg-[#000]'
+                  bg === '#000'
                     ? 'border border-[#606060]'
                     : 'border border-[rgba(0,0,0,0.06)]',
                 )}
