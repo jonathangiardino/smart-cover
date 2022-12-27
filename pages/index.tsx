@@ -296,7 +296,7 @@ const Home: NextPage = () => {
             className={clsx(
               'relative w-full md:w-[654px] h-[400px] md:h-[520px] rounded-[28px] flex flex-col items-center justify-center border-[1px] border-[rgba(0,0,0,0.06)] transition-colors duration-500 ease-out',
             )}
-            onMouseOver={() => setDisplayToolbar(true)}
+            onMouseEnter={() => setDisplayToolbar(true)}
           >
             <NextImage
               className="object-contain object-center w-full h-full p-8"
@@ -310,8 +310,8 @@ const Home: NextPage = () => {
         <div
           className={clsx(
             'h-[50px] w-full md:w-[416px] m-2 p-2 border-[1px] border-[rgba(0,0,0,0.06)] rounded-lg shadow-lg transition-opacity duration-500 ease-in-out',
-            !screenshot  ? 'invisible' : 'visible',
-            displayToolbar  ? 'opacity-100' : 'opacity-0',
+            !screenshot  ? 'hidden' : 'flex',
+            displayToolbar  ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none',
           )}
         >
           <div className="flex justify-center items-center gap-3">
