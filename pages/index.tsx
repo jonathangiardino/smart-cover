@@ -310,7 +310,8 @@ const Home: NextPage = () => {
         <div
           className={clsx(
             'h-[50px] w-full md:w-[416px] m-2 p-2 border-[1px] border-[rgba(0,0,0,0.06)] rounded-lg shadow-lg transition-opacity duration-500 ease-in-out',
-            screenshot && displayToolbar ? 'opacity-100' : 'opacity-0',
+            !screenshot  ? 'invisible' : 'visible',
+            displayToolbar  ? 'opacity-100' : 'opacity-0',
           )}
         >
           <div className="flex justify-center items-center gap-3">
