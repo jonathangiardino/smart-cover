@@ -4,8 +4,11 @@ import { Inter } from '@next/font/google'
 import NextImage from 'next/image'
 import Head from 'next/head'
 import { useDropzone } from 'react-dropzone'
+import { useDebounce } from 'use-debounce'
 import clsx from 'clsx'
 import * as Tooltip from '@radix-ui/react-tooltip'
+import * as Popover from '@radix-ui/react-popover'
+import { HexColorPicker, HexColorInput } from 'react-colorful'
 import { acceptStyle, rejectStyle } from '../styles/utils'
 import { Icon } from '../components/shared/icon'
 
@@ -26,6 +29,8 @@ interface ToolbarColorOptionProps {
   tooltip: string
   additionalClasses?: string
   state?: string
+  customColorActive?: boolean
+  onChange?: (color: string) => void
   onClick?: () => void
 }
 
@@ -48,37 +53,37 @@ const toolbarOptions = {
     {
       name: 'white',
       tooltip: '#FFFFFF',
-      bg: 'bg-white',
+      bg: '#fff',
     },
     {
       name: 'gray',
       tooltip: '#F7F7F7',
-      bg: 'bg-[#F7F7F7]',
+      bg: '#F7F7F7',
     },
     {
       name: 'black',
       tooltip: '#000000',
-      bg: 'bg-black',
+      bg: '#000',
     },
     {
       name: 'red',
       tooltip: '#FF7272',
-      bg: 'bg-[#FF7272]',
+      bg: '#FF7272',
     },
     {
       name: 'green',
       tooltip: '#71FF87',
-      bg: 'bg-[#71FF87]',
+      bg: '#71FF87',
     },
     {
       name: 'blue',
       tooltip: '#7098FF',
-      bg: 'bg-[#7098FF]',
+      bg: '#7098FF',
     },
     {
       name: 'multi',
       tooltip: 'Choose a custom color',
-      bg: 'bg-indigo-500',
+      bg: '',
     },
   ],
 }
@@ -115,29 +120,57 @@ const ToolbarColorOption: FC<ToolbarColorOptionProps> = ({
   name,
   tooltip,
   bg,
-  onClick,
   additionalClasses,
+  state,
+  customColorActive,
+  onClick,
+  onChange,
 }) => {
   switch (true) {
     case name === 'multi':
       return (
-        <Tooltip.Root>
-          <Tooltip.Trigger asChild>
-            <button
-              className={clsx(
-                "h-8 w-8 flex justify-center items-center bg-[url('/wheel.svg')] bg-white hover:bg-[#F2F2F2] rounded",
-                additionalClasses,
-              )}
-              onClick={onClick}
-            />
-          </Tooltip.Trigger>
-          <Tooltip.Content className="bg-white rounded-md shadow-md px-[10px] py-[6px] text-[10px] leading-4 text-neutral-500 mb-4">
-            {tooltip}
-          </Tooltip.Content>
-        </Tooltip.Root>
+        <Popover.Root>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <Popover.Trigger asChild>
+                <button
+                  className={clsx(
+                    "h-8 w-8 flex justify-center items-center bg-[url('/wheel.svg')] rounded",
+                    customColorActive
+                      ? 'bg-black hover:bg-black'
+                      : 'bg-white hover:bg-[#F2F2F2] ',
+                    additionalClasses,
+                  )}
+                />
+              </Popover.Trigger>
+            </Tooltip.Trigger>
+            <Tooltip.Content className="bg-white rounded-md shadow-md px-[10px] py-[6px] text-[10px] leading-4 text-neutral-500 mb-4">
+              {!customColorActive ? tooltip : state}
+            </Tooltip.Content>
+          </Tooltip.Root>
+          <Popover.Portal>
+            <Popover.Content
+              className="mr-4 p-2 bg-white rounded-[8px] w-[176px] min-h-[244px] shadow-lg"
+              align="center"
+              sideOffset={14}
+            >
+              <HexColorPicker
+                className="max-w-full"
+                color={state}
+                onChange={onChange}
+              />
+              <HexColorInput
+                className="w-full p-2 bg-[#F7F7F7] mt-3 text-xs"
+                color={state}
+                onChange={onChange}
+              />
+            </Popover.Content>
+          </Popover.Portal>
+        </Popover.Root>
       )
 
     case name !== 'multi':
+      const backgroundValue = bg !== 'bg-[#fff]' ? `bg-[${bg}]` : 'bg-white'
       return (
         <Tooltip.Root>
           <Tooltip.Trigger asChild>
@@ -151,8 +184,10 @@ const ToolbarColorOption: FC<ToolbarColorOptionProps> = ({
               <span
                 className={clsx(
                   'h-5 w-5 rounded-full',
-                  bg,
-                  bg === 'bg-black' && 'border border-[#333333]'
+                  backgroundValue,
+                  backgroundValue === 'bg-[#000]'
+                    ? 'border border-[#606060]'
+                    : 'border border-[rgba(0,0,0,0.06)]',
                 )}
               />
             </button>
@@ -171,7 +206,11 @@ const ToolbarColorOption: FC<ToolbarColorOptionProps> = ({
 const Home: NextPage = () => {
   const [screenshot, setScreenshot] = useState<HTMLImageElement | null>(null)
   const [displayToolbar, setDisplayToolbar] = useState<boolean>(true)
-  const [backgroundColor, setBackgroundColor] = useState<string>('bg-[#F7F7F7]')
+  const [backgroundColor, setBackgroundColor] = useState<string>('#F7F7F7')
+  const [customColorActive, setCustomColorActive] = useState<boolean>(false)
+  const [bgValue] = useDebounce(backgroundColor, 150)
+  const [customColorActiveValue] = useDebounce(customColorActive, 150)
+
   const onDrop = useCallback((acceptedFiles: any) => {
     let img = new Image()
     img.src = window.URL.createObjectURL(acceptedFiles[0])
@@ -246,9 +285,9 @@ const Home: NextPage = () => {
           </div>
         ) : (
           <div
+            style={{ backgroundColor: bgValue }}
             className={clsx(
-              'relative w-full md:w-[654px] h-[400px] md:h-[520px] rounded-[28px] flex flex-col items-center justify-center border-[1px] border-[rgba(0,0,0,0.06)]',
-              `bg-${backgroundColor}`,
+              'relative w-full md:w-[654px] h-[400px] md:h-[520px] rounded-[28px] flex flex-col items-center justify-center border-[1px] border-[rgba(0,0,0,0.06)] transition-colors duration-500 ease-out',
             )}
           >
             <NextImage
@@ -304,16 +343,22 @@ const Home: NextPage = () => {
                     bg={color.bg}
                     tooltip={color.tooltip}
                     additionalClasses={
-                      backgroundColor === color.bg
-                        ? 'bg-black hover:bg-black'
-                        : ''
+                      bgValue === color.bg ? 'bg-black hover:bg-black' : ''
                     }
                     onClick={() => {
-                      color.name === 'multi'
-                        ? alert('Coming soon')
-                        : setBackgroundColor(color.bg)
+                      if (color.name !== 'multi') {
+                        setBackgroundColor(color.bg)
+                        setCustomColorActive(false)
+                      } else {
+                        null
+                      }
                     }}
-                    state={backgroundColor}
+                    customColorActive={customColorActiveValue}
+                    state={bgValue}
+                    onChange={(color) => {
+                      setBackgroundColor(color)
+                      setCustomColorActive(true)
+                    }}
                   />
                 ))}
               </div>

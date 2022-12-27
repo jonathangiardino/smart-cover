@@ -4,7 +4,9 @@
 - [x] Implement Upload functionality
 - [x] Implement color background functionality
 - [x] Make basic component for toolbar
-- [ ] Make color wheel component
+- [x] Make color wheel component
+- [ ] Manage toolbar visibility on hover
+- [ ] Handle new upload
 - [ ] Setup context/reducer for saving temporary state  
 - [ ] Handle image contraints and conditions for applying frame or not
 
