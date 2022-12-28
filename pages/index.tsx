@@ -81,7 +81,7 @@ const Home: NextPage = () => {
       <main
         className={clsx(
           inter.className,
-          'relative flex w-full flex-1 flex-col justify-between items-center md:justify-center px-4 md:px-8 text-center',
+          'relative flex w-full flex-1 flex-col justify-start items-center md:justify-center px-4 md:px-8 text-center',
         )}
       >
         {!screenshot ? (
