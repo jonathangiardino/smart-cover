@@ -47,7 +47,7 @@ const Screenshot = ({
       default:
         return (
           <NextImage
-            className="object-contain object-center w-full h-full p-7 animate-fadeIn delay-75"
+            className="object-contain object-center h-full p-7 animate-fadeIn delay-75"
             src={screenshot.src}
             alt={screenshot.title}
             width={screenshot.width}
@@ -61,7 +61,7 @@ const Screenshot = ({
     <div
       style={{ backgroundColor: bgValue }}
       className={clsx(
-        'relative w-full md:w-[654px] h-[400px] md:h-[520px] rounded-[28px] flex flex-col items-center justify-center border-[1px] border-[rgba(0,0,0,0.06)] transition-colors duration-500 ease-out ',
+        'relative w-full md:w-[654px] h-[600px] md:h-[520px] rounded-[28px] flex flex-col items-center justify-center border-[1px] border-[rgba(0,0,0,0.06)] transition-colors duration-500 ease-out ',
       )}
       onMouseMove={() => setDisplayToolbar(true)}
       onTouchStart={() => setDisplayToolbar(true)}

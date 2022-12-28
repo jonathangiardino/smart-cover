@@ -72,7 +72,7 @@ const Home: NextPage = () => {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2">
+    <div className="flex min-h-screen flex-col items-center justify-center py-4 md:py-2">
       <Head>
         <title>Smart Cover</title>
         <link rel="icon" href="/favicon.ico" />
@@ -81,7 +81,7 @@ const Home: NextPage = () => {
       <main
         className={clsx(
           inter.className,
-          'relative flex w-full flex-1 flex-col items-center justify-center px-8 text-center',
+          'relative flex w-full flex-1 flex-col justify-between items-center md:justify-center px-4 md:px-8 text-center',
         )}
       >
         {!screenshot ? (
@@ -105,14 +105,14 @@ const Home: NextPage = () => {
         )}
         <div
           className={clsx(
-            'h-[50px] w-full md:w-[416px] m-2 p-2 border-[1px] border-[rgba(0,0,0,0.06)] rounded-lg shadow-lg transition-opacity duration-500 ease-in-out',
+            'h-16 md:h-[50px] w-full md:w-[416px] p-3 m-2 md:p-2 border-[1px] border-[rgba(0,0,0,0.06)] rounded-lg shadow-lg transition-opacity duration-500 ease-in-out overflow-auto',
             !screenshot ? 'hidden' : 'flex',
             displayToolbar
-              ? 'opacity-100 pointer-events-auto'
-              : 'opacity-0 pointer-events-none',
+              ? 'opacity-100 md:opacity-100 md:pointer-events-auto'
+              : 'opacity-100 md:opacity-0 md:pointer-events-none',
           )}
         >
-          <div className="flex justify-center items-center gap-3">
+          <div className="flex justify-start md:justify-center items-center gap-5 md:gap-3">
             <Tooltip.Provider>
               {/* UPLOAD */}
               <ToolbarOption
