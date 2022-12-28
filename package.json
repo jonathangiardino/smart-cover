@@ -20,6 +20,7 @@
     "use-debounce": "^9.0.2"
   },
   "devDependencies": {
+    "@types/merge-images": "^1.2.1",
     "@types/node": "18.11.3",
     "@types/react": "18.0.21",
     "@types/react-color": "^3.0.6",
