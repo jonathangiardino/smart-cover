@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo, useState } from 'react'
+import { FC, useCallback, useMemo, useRef, useState } from 'react'
 import type { NextPage } from 'next'
 import { Inter } from '@next/font/google'
 import NextImage from 'next/image'
@@ -171,7 +171,6 @@ const ToolbarColorOption: FC<ToolbarColorOptionProps> = ({
       )
 
     case name !== 'multi':
-      const backgroundValue = bg !== 'bg-[#fff]' ? `bg-[${bg}]` : 'bg-white'
       return (
         <Tooltip.Root>
           <Tooltip.Trigger asChild>
@@ -212,7 +211,11 @@ const Home: NextPage = () => {
   const [bgValue] = useDebounce(backgroundColor, 150)
   const [customColorActiveValue] = useDebounce(customColorActive, 150)
 
+  const inputRef = useRef<HTMLInputElement>(null)
+
   const onDrop = useCallback((acceptedFiles: any) => {
+    if (acceptedFiles.length === 0) return
+
     let img = new Image()
     img.src = window.URL.createObjectURL(acceptedFiles[0])
     img.onload = () => {
@@ -246,6 +249,8 @@ const Home: NextPage = () => {
   }
 
   useIdleTimer({ onIdle, timeout: 3000 })
+
+  const handleNewUpload = () => inputRef.current?.click()
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
@@ -296,8 +301,16 @@ const Home: NextPage = () => {
             className={clsx(
               'relative w-full md:w-[654px] h-[400px] md:h-[520px] rounded-[28px] flex flex-col items-center justify-center border-[1px] border-[rgba(0,0,0,0.06)] transition-colors duration-500 ease-out',
             )}
-            onMouseEnter={() => setDisplayToolbar(true)}
+            onMouseMove={() => setDisplayToolbar(true)}
+            onTouchStart={() => setDisplayToolbar(true)}
           >
+            <input
+              className="hidden sr-only"
+              ref={inputRef}
+              type="file"
+              accept="image/*"
+              onChange={(e) => onDrop(e.target?.files)}
+            />
             <NextImage
               className="object-contain object-center w-full h-full p-8"
               src={screenshot.src}
@@ -310,8 +323,10 @@ const Home: NextPage = () => {
         <div
           className={clsx(
             'h-[50px] w-full md:w-[416px] m-2 p-2 border-[1px] border-[rgba(0,0,0,0.06)] rounded-lg shadow-lg transition-opacity duration-500 ease-in-out',
-            !screenshot  ? 'hidden' : 'flex',
-            displayToolbar  ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none',
+            !screenshot ? 'hidden' : 'flex',
+            displayToolbar
+              ? 'opacity-100 pointer-events-auto'
+              : 'opacity-0 pointer-events-none',
           )}
         >
           <div className="flex justify-center items-center gap-3">
@@ -321,6 +336,7 @@ const Home: NextPage = () => {
                 type={toolbarOptions.uploader.type}
                 icon={toolbarOptions.uploader.type}
                 tooltip={toolbarOptions.uploader.tooltip}
+                onClick={handleNewUpload}
               />
 
               <span className="flex justify-center items-center hover:bg-[#F2F2F2] rounded">

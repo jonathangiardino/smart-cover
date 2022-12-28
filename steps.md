@@ -6,7 +6,7 @@
 - [x] Make basic component for toolbar
 - [x] Make color wheel component
 - [x] Manage toolbar visibility on hover
-- [ ] Handle new upload
+- [x] Handle new upload
 - [ ] Setup context/reducer for saving temporary state  
 - [ ] Handle image contraints and conditions for applying frame or not
 
