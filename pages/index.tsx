@@ -15,6 +15,7 @@ import {
 } from '../components/toolbar-options'
 import Dropzone from '../components/dropzone'
 import Screenshot from '../components/screenshot'
+import { isIphoneAspectRatio } from '../utils'
 
 // App font
 const inter = Inter({ subsets: ['latin'] })
@@ -24,23 +25,30 @@ const Home: NextPage = () => {
   const [displayToolbar, setDisplayToolbar] = useState<boolean>(false)
   const [backgroundColor, setBackgroundColor] = useState<string>('#F7F7F7')
   const [customColorActive, setCustomColorActive] = useState<boolean>(false)
+  const [frameOption, setFrameOption] = useState<string>('no-frame')
+  const [framingAllowed, setFramingAllowed] = useState<boolean>(false)
 
   const [bgValue] = useDebounce(backgroundColor, 150)
   const [customColorActiveValue] = useDebounce(customColorActive, 150)
 
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const handleNewUpload = useCallback(() => inputRef.current?.click(), [])
+  const handleNewUpload = () => inputRef.current?.click()
   const onDrop = useCallback((acceptedFiles: any) => {
     if (acceptedFiles.length === 0) return
-    if (screenshot) setScreenshot(null)
+    if (screenshot) reset()
 
     let img = new Image()
     img.src = window.URL.createObjectURL(acceptedFiles[0])
     img.onload = () => {
+      console.log(isIphoneAspectRatio(img))
+      if (isIphoneAspectRatio(img)) {
+        setFramingAllowed(true)
+        setFrameOption('iphone-frame')
+      }
       setScreenshot(img)
     }
-  }, [])
+  },[screenshot])
 
   // Dropzone handlers
   const {
@@ -57,6 +65,11 @@ const Home: NextPage = () => {
     setDisplayToolbar(false)
   }
   useIdleTimer({ onIdle, timeout: 3000 })
+
+  function reset() {
+    setFramingAllowed(false)
+    setFrameOption('no-frame')
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
@@ -87,6 +100,7 @@ const Home: NextPage = () => {
             setDisplayToolbar={setDisplayToolbar}
             onDrop={onDrop}
             inputRef={inputRef}
+            frameOption={frameOption}
           />
         )}
         <div
@@ -99,7 +113,7 @@ const Home: NextPage = () => {
           )}
         >
           <div className="flex justify-center items-center gap-3">
-            <Tooltip.Provider delayDuration={300}>
+            <Tooltip.Provider>
               {/* UPLOAD */}
               <ToolbarOption
                 type={toolbarOptions.uploader.type}
@@ -119,6 +133,11 @@ const Home: NextPage = () => {
                   icon={frame.type}
                   type={frame.type}
                   tooltip={frame.tooltip}
+                  framingAllowed={framingAllowed}
+                  frameOption={frameOption}
+                  onClick={() => {
+                    setFrameOption(frame.type)
+                  }}
                 />
               ))}
 

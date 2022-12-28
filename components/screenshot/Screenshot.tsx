@@ -9,6 +9,7 @@ interface ScreenshotProps {
   setDisplayToolbar: (value: boolean) => void
   onDrop: (files: any) => void
   inputRef: React.RefObject<HTMLInputElement>
+  frameOption: string
 }
 
 const Screenshot = ({
@@ -17,23 +18,24 @@ const Screenshot = ({
   setDisplayToolbar,
   onDrop,
   inputRef,
+  frameOption
 }: ScreenshotProps) => {
   const renderScreenshot = () => {
     if (!screenshot) return null
 
     switch (true) {
-      case isIphoneAspectRatio(screenshot):
+      case isIphoneAspectRatio(screenshot) && frameOption === 'iphone-frame':
         return (
           <div className="relative">
             <NextImage
-              className="w-[209px] m-8 rounded-xl object-contain object-center animate-fadeIn delay-75"
+              className="w-[209px] m-8 rounded-xl object-contain object-center animate-fadeIn"
               src={screenshot.src}
               alt={screenshot.title}
               width={screenshot.width}
               height={screenshot.height}
             />
             <NextImage
-              className="object-contain object-center max-h-full absolute top-0 p-2 animate-fadeIn delay-75"
+              className="object-contain object-center max-h-full absolute top-0 p-2 animate-fadeIn"
               src={'/iphone-black.png'}
               alt="iPhone frame"
               width={screenshot.width}
@@ -59,7 +61,7 @@ const Screenshot = ({
     <div
       style={{ backgroundColor: bgValue }}
       className={clsx(
-        'relative w-full md:w-[654px] h-[400px] md:h-[520px] rounded-[28px] flex flex-col items-center justify-center border-[1px] border-[rgba(0,0,0,0.06)] transition-colors duration-500 ease-out animate-fadeIn',
+        'relative w-full md:w-[654px] h-[400px] md:h-[520px] rounded-[28px] flex flex-col items-center justify-center border-[1px] border-[rgba(0,0,0,0.06)] transition-colors duration-500 ease-out ',
       )}
       onMouseMove={() => setDisplayToolbar(true)}
       onTouchStart={() => setDisplayToolbar(true)}

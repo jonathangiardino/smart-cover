@@ -8,7 +8,3 @@
 - [x] Manage toolbar visibility on hover
 - [x] Handle new upload
 - [x] Handle image contraints and conditions for applying frame or not
-
-## ⚡ Extra mile
-
-- [ ] Add gradient background
