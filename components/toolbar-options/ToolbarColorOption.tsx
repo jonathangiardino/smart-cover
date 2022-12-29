@@ -74,7 +74,7 @@ const ToolbarColorOption: FC<ToolbarColorOptionProps> = ({
           <Tooltip.Trigger asChild>
             <button
               className={clsx(
-                'h-8 w-8 flex justify-center items-center bg-white hover:bg-[#F2F2F2] rounded',
+                'h-8 w-8 flex justify-center items-center hover:bg-[#F2F2F2] rounded',
                 additionalClasses,
               )}
               onClick={onClick}
